@@ -1,17 +1,18 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class FieldManager : MonoBehaviour
 {
     [Header("Vars")]
-    Cell[,] cells;
+    [HideInInspector] public Cell[,] cells;
     [HideInInspector] public int cellsPerRow;
     [HideInInspector] public int cellsPerColumn;
     int cellsTotal;
 
     [Header("Colors")]
-    Color notFilledCellColor;
-    Color filledCellColor;
+    [SerializeField] Color notFilledCellColor;
+    [SerializeField] Color filledCellColor;
 
     [Header("GameObjects")]
     [SerializeField] Transform GameField;
@@ -22,6 +23,9 @@ public class FieldManager : MonoBehaviour
 
     [Header("Other")]
     GridLayoutGroup FieldGrid;
+
+    [Header("Scripts")]
+    SnakeManager snakeManager;
 
     public class Cell
     {
@@ -67,6 +71,7 @@ public class FieldManager : MonoBehaviour
         // загрузка
         GameFieldRT = GameField.GetComponent<RectTransform>();
         FieldGrid = GameField.GetComponent<GridLayoutGroup>();
+        snakeManager = GetComponent<SnakeManager>();
 
         // задаем значения
         cellsPerRow = Mathf.FloorToInt(GameFieldRT.sizeDelta.x / FieldGrid.cellSize.x);
@@ -83,5 +88,7 @@ public class FieldManager : MonoBehaviour
             }
         }
 
+        // создаем червя
+        snakeManager.CreateSnake();
     }
 }

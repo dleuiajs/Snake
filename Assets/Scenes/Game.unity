@@ -240,6 +240,8 @@ GameObject:
   - component: {fileID: 1421443073}
   - component: {fileID: 1421443072}
   - component: {fileID: 1421443076}
+  - component: {fileID: 1421443077}
+  - component: {fileID: 1421443078}
   m_Layer: 5
   m_Name: GameField
   m_TagString: Untagged
@@ -355,8 +357,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f76f82c95dca434bb26d5b529f4b188, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cellsPerRow: 0
+  cellsPerColumn: 0
+  notFilledCellColor: {r: 0.6039216, g: 0.7568628, b: 0.019607844, a: 1}
+  filledCellColor: {r: 0.16470589, g: 0.21960784, b: 0, a: 0}
   GameField: {fileID: 1421443071}
   CellPrefab: {fileID: 7611453809975706201, guid: 45b0ea371f8037246afb2ee550ece7d9, type: 3}
+--- !u!114 &1421443077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1421443070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4968a70858c9004394929e3da4d8f2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startingLength: 3
+  speed: 0.5
+--- !u!114 &1421443078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1421443070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4387c5aea13e95840b647c527933cf37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1448580253
 GameObject:
   m_ObjectHideFlags: 0
