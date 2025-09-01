@@ -7,13 +7,14 @@ public class SnakeManager : MonoBehaviour
     [Header("Vars")]
     [SerializeField] int startingLength = 3;
     [SerializeField] float speed = 1f;
+    public Vector2Int defaultDir = Vector2Int.left;
 
     [Header("Scripts")]
     FieldManager fieldManager;
     GameManager gameManager;
 
     [Header("Game values")]
-    List<FieldManager.Cell> snakeCells = new List<FieldManager.Cell>();
+    [HideInInspector] public List<FieldManager.Cell> snakeCells = new List<FieldManager.Cell>();
     Vector2Int directionNow;
 
     void Awake()
@@ -39,10 +40,7 @@ public class SnakeManager : MonoBehaviour
         if ((xInput != 0 || yInput != 0) && xInput * yInput == 0)
         {
             directionNow = new Vector2Int(xInput, yInput);
-            Debug.Log($"{xInput}, {yInput}");
         }
-        Debug.Log($"{Input.GetAxis("Horizontal")}, {Input.GetAxis("Vertical")}");
-
     }
 
     public void CreateSnake()
@@ -65,21 +63,34 @@ public class SnakeManager : MonoBehaviour
         }
 
         // задаем начальное направление червя
-        directionNow = Vector2Int.left;
+        directionNow = defaultDir;
         Debug.Log(directionNow);
         StartCoroutine(MovingSnake());
     }
+
+    bool growSnake = false;
+
+    public void Grow()
+    {
+        growSnake = true;
+    }
+
 
     void AddTailSnakeCell(int x, int y)
     {
         snakeCells.Add(fieldManager.cells[y, x]);
         fieldManager.cells[y, x].Fill();
+        if (snakeCells.Count >= 2)
+            fieldManager.cells[y, x].direction = snakeCells[snakeCells.Count - 2].direction;
+        else
+            fieldManager.cells[y, x].direction = directionNow;
     }
 
     void AddHeadSnakeCell(int x, int y)
     {
         snakeCells.Insert(0, fieldManager.cells[y, x]);
         fieldManager.cells[y, x].Fill();
+        fieldManager.cells[y, x].direction = directionNow;
     }
 
     void RemoveSnakeCell(int x, int y)
@@ -95,7 +106,10 @@ public class SnakeManager : MonoBehaviour
         if (newPosX >= 0 && newPosX < fieldManager.cellsPerRow && newPosY >= 0 && newPosY < fieldManager.cellsPerColumn)
         {
             AddHeadSnakeCell(newPosX, newPosY);
-            RemoveSnakeCell(snakeCells[snakeCells.Count - 1].x, snakeCells[snakeCells.Count - 1].y);
+            if (!growSnake)
+                RemoveSnakeCell(snakeCells[snakeCells.Count - 1].x, snakeCells[snakeCells.Count - 1].y);
+            else
+                growSnake = false;
             Debug.Log($"New Head pos: {snakeCells[0].x}, {snakeCells[0].y}. Tail pos: {snakeCells[snakeCells.Count - 1].x}, {snakeCells[snakeCells.Count - 1].y}. Direction: {direction.x}, {direction.y}");
         }
         else

@@ -11,12 +11,14 @@ public class FieldManager : MonoBehaviour
     int cellsTotal;
 
     [Header("Colors")]
+    [SerializeField] Color backgroundColor;
     [SerializeField] Color notFilledCellColor;
     [SerializeField] Color filledCellColor;
 
     [Header("GameObjects")]
     [SerializeField] Transform GameField;
     RectTransform GameFieldRT;
+    Image BackgroundImage;
 
     [Header("Prefabs")]
     [SerializeField] GameObject CellPrefab;
@@ -26,6 +28,7 @@ public class FieldManager : MonoBehaviour
 
     [Header("Scripts")]
     SnakeManager snakeManager;
+    FoodManager foodManager;
 
     public class Cell
     {
@@ -35,8 +38,13 @@ public class FieldManager : MonoBehaviour
         public int x { get; set; }
         public int y { get; set; }
 
+        // Direction
+        public Vector2Int direction;
+
         // GameObjects
+        private Image OutlineImg;
         private Image InsideImg;
+        private Outline Outline;
 
         // Scripts
         FieldManager manager;
@@ -53,16 +61,27 @@ public class FieldManager : MonoBehaviour
 
             // задаем InsideImg (наш пиксель)
             InsideImg = obj.transform.Find("InsideImg").GetComponent<Image>();
+            OutlineImg = obj.GetComponent<Image>();
+            Outline = InsideImg.GetComponent<Outline>();
+            Outline.effectColor = manager.backgroundColor;
+            Clear();
+        }
+
+        public void FillCustomColor(Color color)
+        {
+            InsideImg.color = color;
+            OutlineImg.color = color;
         }
 
         public void Fill()
         {
-            InsideImg.color = manager.filledCellColor;
+            FillCustomColor(manager.filledCellColor);
         }
 
         public void Clear()
         {
             InsideImg.color = manager.notFilledCellColor;
+            OutlineImg.color = manager.notFilledCellColor;
         }
     }
 
@@ -71,11 +90,14 @@ public class FieldManager : MonoBehaviour
         // загрузка
         GameFieldRT = GameField.GetComponent<RectTransform>();
         FieldGrid = GameField.GetComponent<GridLayoutGroup>();
+        BackgroundImage = GameField.GetComponent<Image>();
         snakeManager = GetComponent<SnakeManager>();
+        foodManager = GetComponent<FoodManager>();
 
         // задаем значения
-        cellsPerRow = Mathf.FloorToInt(GameFieldRT.sizeDelta.x / FieldGrid.cellSize.x);
-        cellsPerColumn = Mathf.FloorToInt(GameFieldRT.sizeDelta.y / FieldGrid.cellSize.y);
+        BackgroundImage.color = backgroundColor;
+        cellsPerRow = Mathf.FloorToInt((GameFieldRT.sizeDelta.x - FieldGrid.padding.horizontal) / (FieldGrid.cellSize.x + FieldGrid.spacing.x));
+        cellsPerColumn = Mathf.FloorToInt((GameFieldRT.sizeDelta.y - FieldGrid.padding.vertical) / (FieldGrid.cellSize.y + FieldGrid.spacing.y));
         cellsTotal = cellsPerRow * cellsPerColumn;
         Debug.Log($"Cells per row: {cellsPerRow}, Cells per column: {cellsPerColumn}, Total cells: {cellsTotal}");
         cells = new Cell[cellsPerRow, cellsPerColumn];
@@ -90,5 +112,8 @@ public class FieldManager : MonoBehaviour
 
         // создаем червя
         snakeManager.CreateSnake();
+
+        // создаем еду
+        foodManager.GenerateFood();
     }
 }
