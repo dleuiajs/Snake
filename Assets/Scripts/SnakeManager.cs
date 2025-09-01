@@ -28,13 +28,13 @@ public class SnakeManager : MonoBehaviour
         int xInput = 0;
         int yInput = 0;
 
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+        if ((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) && snakeCells[0].direction.y != 1)
             yInput = -1;
-        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+        if ((Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) && snakeCells[0].direction.y != -1)
             yInput = 1;
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) && snakeCells[0].direction.x != 1)
             xInput = -1;
-        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+        if ((Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) && snakeCells[0].direction.x != -1)
             xInput = 1;
 
         if ((xInput != 0 || yInput != 0) && xInput * yInput == 0)
@@ -99,11 +99,21 @@ public class SnakeManager : MonoBehaviour
         fieldManager.cells[y, x].Clear();
     }
 
+    bool CheckCollision(int x, int y)
+    {
+        foreach (var obj in snakeCells)
+        {
+            if (obj.x == x && obj.y == y)
+                return true;
+        }
+        return false;
+    }
+
     void MoveSnake(Vector2Int direction)
     {
         int newPosX = snakeCells[0].x + direction.x;
         int newPosY = snakeCells[0].y + direction.y;
-        if (newPosX >= 0 && newPosX < fieldManager.cellsPerRow && newPosY >= 0 && newPosY < fieldManager.cellsPerColumn)
+        if (newPosX >= 0 && newPosX < fieldManager.cellsPerRow && newPosY >= 0 && newPosY < fieldManager.cellsPerColumn && !CheckCollision(newPosX, newPosY))
         {
             AddHeadSnakeCell(newPosX, newPosY);
             if (!growSnake)
@@ -116,6 +126,7 @@ public class SnakeManager : MonoBehaviour
         {
             StopAllCoroutines();
             gameManager.Lose();
+            StartCoroutine(SnakeFlashing());
         }
     }
 
@@ -126,5 +137,23 @@ public class SnakeManager : MonoBehaviour
             yield return new WaitForSeconds(speed);
             MoveSnake(directionNow);
         }
+    }
+
+    IEnumerator SnakeFlashing()
+    {
+        bool filled = true;
+        for (int i = 0; i < 3 / speed; i++)
+        {
+            foreach (var snakeCell in snakeCells)
+            {
+                if (filled)
+                    snakeCell.Clear();
+                else
+                    snakeCell.Fill();
+            }
+            filled = !filled;
+            yield return new WaitForSeconds(speed);
+        }
+        gameManager.Reset();
     }
 }
