@@ -9,10 +9,15 @@ public class GameManager : MonoBehaviour
 
     [Header("GameObjects")]
     [SerializeField] TMP_Text ScoreText;
+    [SerializeField] GameObject PausePanel;
+
+    [Header("Bools")]
+    private bool gamePaused;
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.F11))
+        // FullScreen Toggle
+        if (Input.GetButtonDown("fullscreen"))
         {
             if (Screen.fullScreen)
             {
@@ -24,6 +29,17 @@ public class GameManager : MonoBehaviour
                 Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
                 Screen.SetResolution(Display.main.systemWidth, Display.main.systemHeight, true);
             }
+        }
+
+        // Pause Toggle
+        if (Input.GetButtonDown("pause"))
+        {
+            gamePaused = !gamePaused;
+            PausePanel.SetActive(gamePaused);
+            if (gamePaused)
+                Time.timeScale = 0f;
+            else
+                Time.timeScale = 1f;
         }
     }
 

@@ -10,8 +10,8 @@ public class SnakeManager : MonoBehaviour
     public Vector2Int defaultDir = Vector2Int.left;
 
     [Header("Scripts")]
+    [SerializeField] GameManager gameManager;
     FieldManager fieldManager;
-    GameManager gameManager;
 
     [Header("Game values")]
     [HideInInspector] public List<FieldManager.Cell> snakeCells = new List<FieldManager.Cell>();
@@ -20,7 +20,6 @@ public class SnakeManager : MonoBehaviour
     void Awake()
     {
         fieldManager = GetComponent<FieldManager>();
-        gameManager = GetComponent<GameManager>();
     }
 
     void Update()

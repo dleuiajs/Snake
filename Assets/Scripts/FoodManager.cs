@@ -8,15 +8,14 @@ public class FoodManager : MonoBehaviour
     FieldManager.Cell FoodCell;
 
     [Header("Scripts")]
+    [SerializeField] GameManager gameManager;
     FieldManager fieldManager;
     SnakeManager snakeManager;
-    GameManager gameManager;
 
     void Awake()
     {
         fieldManager = GetComponent<FieldManager>();
         snakeManager = GetComponent<SnakeManager>();
-        gameManager = GetComponent<GameManager>();
     }
 
     void Update()
