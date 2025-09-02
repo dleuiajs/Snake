@@ -78,7 +78,8 @@ public class GameManager : MonoBehaviour
         {
             Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
             Screen.SetResolution(Display.main.systemWidth, Display.main.systemHeight, true);
-            Cursor.visible = false;
+            if (!gamePaused)
+                Cursor.visible = false;
         }
     }
 
@@ -87,9 +88,16 @@ public class GameManager : MonoBehaviour
         gamePaused = !gamePaused;
         PausePanel.SetActive(gamePaused);
         if (gamePaused)
+        {
+            Cursor.visible = true;
             Time.timeScale = 0f;
+        }
         else
+        {
+            if (Screen.fullScreen)
+                Cursor.visible = false;
             Time.timeScale = 1f;
+        }
     }
 
     public void Exit()
