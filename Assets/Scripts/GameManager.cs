@@ -5,14 +5,24 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     [Header("Stats")]
+    [HideInInspector] public int highscore = 0;
     private int score = 0;
 
     [Header("GameObjects")]
     [SerializeField] TMP_Text ScoreText;
+    [SerializeField] TMP_Text HighscoreText;
     [SerializeField] GameObject PausePanel;
 
     [Header("Bools")]
     private bool gamePaused;
+
+    [Header("Scripts")]
+    [SerializeField] SavesManager savesManager;
+
+    void Start()
+    {
+        UpdateText();
+    }
 
     void Update()
     {
@@ -46,6 +56,11 @@ public class GameManager : MonoBehaviour
     public void Lose()
     {
         Debug.Log("You lose!");
+        if (score > highscore)
+        {
+            highscore = score;
+        }
+        savesManager.SaveGame();
     }
 
     public void ScoreIncrease()
@@ -57,6 +72,7 @@ public class GameManager : MonoBehaviour
     void UpdateText()
     {
         ScoreText.text = $"Score:\n{score:000000}";
+        HighscoreText.text = $"Highscore:\n{highscore:000000}";
     }
 
     public void Reset()
