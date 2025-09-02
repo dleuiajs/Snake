@@ -12,6 +12,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] TMP_Text ScoreText;
     [SerializeField] TMP_Text HighscoreText;
     [SerializeField] GameObject PausePanel;
+    [SerializeField] TMP_Text PauseText;
+    [SerializeField] GameObject ContinueButton;
+    [SerializeField] GameObject ExitButton;
 
     [Header("Bools")]
     private bool gamePaused;
@@ -39,14 +42,31 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void Lose()
+    void SetHighscore()
     {
-        Debug.Log("You lose!");
         if (score > highscore)
         {
             highscore = score;
         }
         savesManager.SaveGame();
+    }
+
+    public void Lose()
+    {
+        PauseToggle();
+        PauseText.text = "You lost :(";
+        ContinueButton.SetActive(false);
+        ExitButton.SetActive(false);
+        SetHighscore();
+    }
+
+    public void Win()
+    {
+        PauseToggle();
+        PauseText.text = "You won!";
+        ContinueButton.SetActive(false);
+        ExitButton.SetActive(false);
+        SetHighscore();
     }
 
     public void ScoreIncrease()
@@ -61,8 +81,10 @@ public class GameManager : MonoBehaviour
         HighscoreText.text = $"Highscore:\n{highscore:000000}";
     }
 
-    public void Reset()
+    public void Restart()
     {
+        if (gamePaused)
+            PauseToggle();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 

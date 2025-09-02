@@ -112,7 +112,7 @@ public class SnakeManager : MonoBehaviour
     {
         int newPosX = snakeCells[0].x + direction.x;
         int newPosY = snakeCells[0].y + direction.y;
-        if (newPosX >= 0 && newPosX < fieldManager.cellsPerRow && newPosY >= 0 && newPosY < fieldManager.cellsPerColumn && !CheckCollision(newPosX, newPosY))
+        if (newPosX >= 0 && newPosX < fieldManager.cellsPerRow && newPosY >= 0 && newPosY < fieldManager.cellsPerColumn && !CheckCollision(newPosX, newPosY) && snakeCells.Count < fieldManager.cells.Length)
         {
             AddHeadSnakeCell(newPosX, newPosY);
             if (!growSnake)
@@ -124,8 +124,12 @@ public class SnakeManager : MonoBehaviour
         else
         {
             StopAllCoroutines();
-            gameManager.Lose();
             StartCoroutine(SnakeFlashing());
+        }
+        if (snakeCells.Count == fieldManager.cells.Length)
+        {
+            StopAllCoroutines();
+            gameManager.Win();
         }
     }
 
@@ -153,6 +157,6 @@ public class SnakeManager : MonoBehaviour
             filled = !filled;
             yield return new WaitForSeconds(speed);
         }
-        gameManager.Reset();
+        gameManager.Lose();
     }
 }

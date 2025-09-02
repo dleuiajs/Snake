@@ -28,13 +28,16 @@ public class FoodManager : MonoBehaviour
 
     public void GenerateFood()
     {
-        do
+        if (snakeManager.snakeCells.Count < fieldManager.cells.Length)
         {
-            FoodCell = fieldManager.cells[Random.Range(0, fieldManager.cellsPerColumn), Random.Range(0, fieldManager.cellsPerRow)];
+            do
+            {
+                FoodCell = fieldManager.cells[Random.Range(0, fieldManager.cellsPerColumn), Random.Range(0, fieldManager.cellsPerRow)];
+            }
+            while (snakeManager.snakeCells.Contains(FoodCell));
+            FoodCell.FillCustomColor(foodColor);
+            Debug.Log($"Food: {FoodCell.x}, {FoodCell.y}");
         }
-        while (snakeManager.snakeCells.Contains(FoodCell));
-        FoodCell.FillCustomColor(foodColor);
-        Debug.Log($"Food: {FoodCell.x}, {FoodCell.y}");
     }
 
     void EatFood()
