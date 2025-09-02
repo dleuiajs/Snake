@@ -29,27 +29,13 @@ public class GameManager : MonoBehaviour
         // FullScreen Toggle
         if (Input.GetButtonDown("fullscreen"))
         {
-            if (Screen.fullScreen)
-            {
-                Screen.fullScreenMode = FullScreenMode.Windowed;
-                Screen.SetResolution(1280, 720, false);
-            }
-            else
-            {
-                Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
-                Screen.SetResolution(Display.main.systemWidth, Display.main.systemHeight, true);
-            }
+            FullScreenToggle();
         }
 
         // Pause Toggle
         if (Input.GetButtonDown("pause"))
         {
-            gamePaused = !gamePaused;
-            PausePanel.SetActive(gamePaused);
-            if (gamePaused)
-                Time.timeScale = 0f;
-            else
-                Time.timeScale = 1f;
+            PauseToggle();
         }
     }
 
@@ -78,5 +64,37 @@ public class GameManager : MonoBehaviour
     public void Reset()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    void FullScreenToggle()
+    {
+        if (Screen.fullScreen)
+        {
+            Screen.fullScreenMode = FullScreenMode.Windowed;
+            Screen.SetResolution(1280, 720, false);
+            Cursor.visible = true;
+        }
+        else
+        {
+            Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
+            Screen.SetResolution(Display.main.systemWidth, Display.main.systemHeight, true);
+            Cursor.visible = false;
+        }
+    }
+
+    public void PauseToggle()
+    {
+        gamePaused = !gamePaused;
+        PausePanel.SetActive(gamePaused);
+        if (gamePaused)
+            Time.timeScale = 0f;
+        else
+            Time.timeScale = 1f;
+    }
+
+    public void Exit()
+    {
+        Lose();
+        Application.Quit();
     }
 }

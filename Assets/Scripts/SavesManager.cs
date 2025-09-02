@@ -7,7 +7,7 @@ public class SavesManager : MonoBehaviour
 
     void OnApplicationQuit()
     {
-        SaveGame();
+        gameManager.Lose();
     }
 
     void OnApplicationPause(bool pauseStatus)
