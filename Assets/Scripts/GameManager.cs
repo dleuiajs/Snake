@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
 {
     [Header("Stats")]
     [HideInInspector] public int highscore = 0;
-    private int score = 0;
+    [HideInInspector] public int score = 0;
 
     [Header("GameObjects")]
     [SerializeField] TMP_Text ScoreText;
@@ -88,6 +88,7 @@ public class GameManager : MonoBehaviour
     {
         score++;
         UpdateText();
+        DiscordManager.Instance.UpdateActivity();
     }
 
     void UpdateText()

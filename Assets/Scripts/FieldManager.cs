@@ -26,6 +26,7 @@ public class FieldManager : MonoBehaviour
     GridLayoutGroup FieldGrid;
 
     [Header("Scripts")]
+    [SerializeField] GameManager gameManager;
     SnakeManager snakeManager;
     FoodManager foodManager;
 
@@ -114,5 +115,9 @@ public class FieldManager : MonoBehaviour
 
         // создаем еду
         foodManager.GenerateFood();
+
+        // обновляем активность дискорда
+        DiscordManager.Instance.gameManager = gameManager;
+        DiscordManager.Instance.UpdateActivity();
     }
 }
