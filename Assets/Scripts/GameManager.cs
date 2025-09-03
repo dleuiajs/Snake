@@ -41,6 +41,12 @@ public class GameManager : MonoBehaviour
         {
             PauseToggle();
         }
+
+        // Restart Game
+        if (Input.GetButtonDown("restart"))
+        {
+            Restart();
+        }
     }
 
     void SetHighscore()

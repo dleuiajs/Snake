@@ -6,6 +6,7 @@ A simple **Snake** game made in Unity, inspired by the classic **Tetris** style 
 - **Move Snake** – Arrow Keys or WASD  
 - **Pause / Resume** – `Escape` or `P`  
 - **Toggle Fullscreen** – `F11` or `F`  
+- **Restart** – `R`  
 
 ## Features
 - Minimalistic Tetris-style design  
