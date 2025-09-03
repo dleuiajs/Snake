@@ -12,11 +12,14 @@ A simple **Snake** game made in Unity, inspired by the classic **Tetris** style 
 - Minimalistic Tetris-style design  
 - High score saving  
 - Pause and fullscreen support  
+- Discord Rich Presence support
 
 ## Installation
 1. Clone or download this repository.  
 2. Open the project in **Unity** (tested with Unity 2020+, but should work on newer versions).  
-3. Press **Play** in the editor or build for your platform.  
+3. **Download the Discord Game SDK** from the [official site](https://discord.com/developers/docs/game-sdk/sdk-starter-guide).  
+4. Copy the SDK binaries from the `lib` folder in `Assets/Plugins`   
+5. Press **Play** in the editor or build for your platform. 
 
 ## Build
 - Go to **File → Build Settings** in Unity.  
