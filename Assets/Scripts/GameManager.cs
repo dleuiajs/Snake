@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Bools")]
     private bool gamePaused;
+    private bool onlyResetMenuOpened;
 
     [Header("Scripts")]
     [SerializeField] SavesManager savesManager;
@@ -53,19 +54,21 @@ public class GameManager : MonoBehaviour
 
     public void Lose()
     {
-        PauseToggle();
-        PauseText.text = "You lost :(";
-        ContinueButton.SetActive(false);
-        ExitButton.SetActive(false);
-        SetHighscore();
+        OnlyResetMenuEnable("You lost :(");
     }
 
     public void Win()
     {
+        OnlyResetMenuEnable("You won!");
+    }
+
+    void OnlyResetMenuEnable(string text)
+    {
         PauseToggle();
-        PauseText.text = "You won!";
+        PauseText.text = text;
         ContinueButton.SetActive(false);
         ExitButton.SetActive(false);
+        onlyResetMenuOpened = true;
         SetHighscore();
     }
 
@@ -84,7 +87,10 @@ public class GameManager : MonoBehaviour
     public void Restart()
     {
         if (gamePaused)
+        {
+            onlyResetMenuOpened = false;
             PauseToggle();
+        }
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
@@ -107,18 +113,21 @@ public class GameManager : MonoBehaviour
 
     public void PauseToggle()
     {
-        gamePaused = !gamePaused;
-        PausePanel.SetActive(gamePaused);
-        if (gamePaused)
+        if (!onlyResetMenuOpened)
         {
-            Cursor.visible = true;
-            Time.timeScale = 0f;
-        }
-        else
-        {
-            if (Screen.fullScreen)
-                Cursor.visible = false;
-            Time.timeScale = 1f;
+            gamePaused = !gamePaused;
+            PausePanel.SetActive(gamePaused);
+            if (gamePaused)
+            {
+                Cursor.visible = true;
+                Time.timeScale = 0f;
+            }
+            else
+            {
+                if (Screen.fullScreen)
+                    Cursor.visible = false;
+                Time.timeScale = 1f;
+            }
         }
     }
 
