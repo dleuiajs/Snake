@@ -4,13 +4,18 @@ public class FoodManager : MonoBehaviour
 {
     [Header("Colors")]
     [SerializeField] Color foodColor;
+
     [Header("Food")]
     FieldManager.Cell FoodCell;
+
+    [Header("AudioClips")]
+    [SerializeField] AudioClip FoodEatClip;
 
     [Header("Scripts")]
     [SerializeField] GameManager gameManager;
     FieldManager fieldManager;
     SnakeManager snakeManager;
+    [SerializeField] AudioManager audioManager;
 
     void Awake()
     {
@@ -44,11 +49,11 @@ public class FoodManager : MonoBehaviour
     {
         if (FoodCell != null)
         {
-            FieldManager.Cell lastSnakeCell = snakeManager.snakeCells[snakeManager.snakeCells.Count - 1];
             FoodCell = null;
             gameManager.ScoreIncrease();
             snakeManager.Grow();
             GenerateFood();
+            audioManager.PlaySound(FoodEatClip);
         }
     }
 }

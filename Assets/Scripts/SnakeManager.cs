@@ -9,13 +9,17 @@ public class SnakeManager : MonoBehaviour
     [SerializeField] float speed = 1f;
     public Vector2Int defaultDir = Vector2Int.left;
 
-    [Header("Scripts")]
-    [SerializeField] GameManager gameManager;
-    FieldManager fieldManager;
+    [Header("AudioClips")]
+    [SerializeField] AudioClip CollisionClip; 
 
     [Header("Game values")]
     [HideInInspector] public List<FieldManager.Cell> snakeCells = new List<FieldManager.Cell>();
     Vector2Int directionNow;
+
+    [Header("Scripts")]
+    [SerializeField] GameManager gameManager;
+    FieldManager fieldManager;
+    [SerializeField] AudioManager audioManager;
 
     void Awake()
     {
@@ -124,8 +128,10 @@ public class SnakeManager : MonoBehaviour
         else
         {
             StopAllCoroutines();
+            audioManager.PlaySound(CollisionClip);
             StartCoroutine(SnakeFlashing());
         }
+
         if (snakeCells.Count == fieldManager.cells.Length)
         {
             StopAllCoroutines();

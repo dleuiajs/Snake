@@ -20,8 +20,13 @@ public class GameManager : MonoBehaviour
     private bool gamePaused;
     private bool onlyResetMenuOpened;
 
+    [Header("AudioClips")]
+    [SerializeField] AudioClip WinClip;
+    [SerializeField] AudioClip LoseClip;
+
     [Header("Scripts")]
     [SerializeField] SavesManager savesManager;
+    [SerializeField] AudioManager audioManager;
 
     void Start()
     {
@@ -60,16 +65,17 @@ public class GameManager : MonoBehaviour
 
     public void Lose()
     {
-        OnlyResetMenuEnable("You lost :(");
+        OnlyResetMenuEnable("You lost :(", LoseClip);
     }
 
     public void Win()
     {
-        OnlyResetMenuEnable("You won!");
+        OnlyResetMenuEnable("You won!", WinClip);
     }
 
-    void OnlyResetMenuEnable(string text)
+    void OnlyResetMenuEnable(string text, AudioClip clip)
     {
+        audioManager.PlaySound(clip);
         PauseToggle();
         PauseText.text = text;
         ContinueButton.SetActive(false);
