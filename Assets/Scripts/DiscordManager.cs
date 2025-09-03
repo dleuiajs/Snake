@@ -1,9 +1,10 @@
 using UnityEngine;
 using Discord;
 using System;
+using System.Collections;
 public class DiscordManager : MonoBehaviour
 {
-    [Header("Settings")]
+    [Header("AppSettings")]
     long applicationID = 1412706836632698889;
 
     string largeImage = "icon_snake";
@@ -13,6 +14,8 @@ public class DiscordManager : MonoBehaviour
     [Header("Discord")]
     public static DiscordManager Instance;
     Discord.Discord discord;
+    float timeoutReconnect = 10f;
+    bool connected = false;
 
     [Header("Scripts")]
     public GameManager gameManager;
@@ -26,54 +29,84 @@ public class DiscordManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        discord = new Discord.Discord(applicationID, (ulong)CreateFlags.NoRequireDiscord);
+        Connect();
         time = DateTimeOffset.Now.ToUnixTimeSeconds();
     }
 
     void Update()
     {
+        if (connected)
+        {
+            try
+            {
+                discord.RunCallbacks();
+            }
+            catch
+            {
+                Debug.LogWarning("RunCallbacks error");
+                Connect();
+            }
+        }
+    }
+
+    void Connect()
+    {
         try
         {
-            discord.RunCallbacks();
+            discord = new Discord.Discord(applicationID, (ulong)CreateFlags.NoRequireDiscord);
+            connected = true;
+            Debug.Log("Discord successfully connected");
         }
         catch
         {
-            Debug.Log("Discord is not running");
+            connected = false;
+            Debug.LogWarning($"Discord is not running. Attempting to connect in {timeoutReconnect} seconds.");
+            StartCoroutine(TryConnect(timeoutReconnect));
         }
+    }
+
+    IEnumerator TryConnect(float timeout)
+    {
+        yield return new WaitForSeconds(timeout);
+        Connect();
     }
 
     public void UpdateActivity()
     {
-        try
+        if (connected)
         {
-            var activityManager = discord.GetActivityManager();
-            var activity = new Activity
+            try
             {
-                Details = $"Score: {gameManager.score}",
-                Assets =
+                var activityManager = discord.GetActivityManager();
+                var activity = new Activity
+                {
+                    Details = $"Score: {gameManager.score}",
+                    Assets =
                 {
                     LargeImage = largeImage,
                     LargeText = $"{Application.productName} v{Application.version}"
                 },
-                Timestamps =
+                    Timestamps =
                 {
                     Start = time
                 }
-            };
+                };
 
-            activityManager.UpdateActivity(activity, (res) =>
+                activityManager.UpdateActivity(activity, (res) =>
+                {
+                    Debug.Log($"Discord UpdateActivity result: {res}");
+                });
+            }
+            catch
             {
-                Debug.Log($"Discord UpdateActivity result: {res}");
-            });
-        }
-        catch
-        {
-            Debug.LogError("Discord update activity error");
+                Debug.LogWarning("Discord update activity error");
+            }
         }
     }
 
     void OnApplicationQuit()
     {
-        discord.Dispose(); // корректно освобождаем
+        if (connected)
+            discord.Dispose(); // корректно освобождаем
     }
 }
