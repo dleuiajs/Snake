@@ -38,9 +38,6 @@ public class FieldManager : MonoBehaviour
         public int x { get; set; }
         public int y { get; set; }
 
-        // Direction
-        public Vector2Int direction;
-
         // GameObjects
         private Image OutlineImg;
         private Image InsideImg;

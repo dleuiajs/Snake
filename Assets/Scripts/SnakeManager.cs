@@ -10,11 +10,12 @@ public class SnakeManager : MonoBehaviour
     public Vector2Int defaultDir = Vector2Int.left;
 
     [Header("AudioClips")]
-    [SerializeField] AudioClip CollisionClip; 
+    [SerializeField] AudioClip CollisionClip;
 
     [Header("Game values")]
     [HideInInspector] public List<FieldManager.Cell> snakeCells = new List<FieldManager.Cell>();
     Vector2Int directionNow;
+    Vector2Int directionHeadNow;
 
     [Header("Scripts")]
     [SerializeField] GameManager gameManager;
@@ -31,13 +32,13 @@ public class SnakeManager : MonoBehaviour
         int xInput = 0;
         int yInput = 0;
 
-        if ((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) && snakeCells[0].direction.y != 1)
+        if ((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) && directionHeadNow.y != 1)
             yInput = -1;
-        if ((Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) && snakeCells[0].direction.y != -1)
+        if ((Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) && directionHeadNow.y != -1)
             yInput = 1;
-        if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) && snakeCells[0].direction.x != 1)
+        if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) && directionHeadNow.x != 1)
             xInput = -1;
-        if ((Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) && snakeCells[0].direction.x != -1)
+        if ((Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) && directionHeadNow.x != -1)
             xInput = 1;
 
         if ((xInput != 0 || yInput != 0) && xInput * yInput == 0)
@@ -67,6 +68,8 @@ public class SnakeManager : MonoBehaviour
 
         // задаем начальное направление червя
         directionNow = defaultDir;
+        directionHeadNow = defaultDir;
+
         Debug.Log(directionNow);
         StartCoroutine(MovingSnake());
     }
@@ -83,17 +86,12 @@ public class SnakeManager : MonoBehaviour
     {
         snakeCells.Add(fieldManager.cells[y, x]);
         fieldManager.cells[y, x].Fill();
-        if (snakeCells.Count >= 2)
-            fieldManager.cells[y, x].direction = snakeCells[snakeCells.Count - 2].direction;
-        else
-            fieldManager.cells[y, x].direction = directionNow;
     }
 
     void AddHeadSnakeCell(int x, int y)
     {
         snakeCells.Insert(0, fieldManager.cells[y, x]);
         fieldManager.cells[y, x].Fill();
-        fieldManager.cells[y, x].direction = directionNow;
     }
 
     void RemoveSnakeCell(int x, int y)
@@ -123,6 +121,7 @@ public class SnakeManager : MonoBehaviour
                 RemoveSnakeCell(snakeCells[snakeCells.Count - 1].x, snakeCells[snakeCells.Count - 1].y);
             else
                 growSnake = false;
+            directionHeadNow = new Vector2Int(direction.x, direction.y);
             Debug.Log($"New Head pos: {snakeCells[0].x}, {snakeCells[0].y}. Tail pos: {snakeCells[snakeCells.Count - 1].x}, {snakeCells[snakeCells.Count - 1].y}. Direction: {direction.x}, {direction.y}");
         }
         else
